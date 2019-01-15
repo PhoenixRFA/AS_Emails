@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>fancyBox - Fancy jQuery Lightbox Alternative | Demonstration</title>
+
+</head>
+<body>
+    <a id="inline" href="#data">This shows content of element who has id="data"</a>
+
+    <div style="display:none"><div id="data">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div></div>
+
+    <script type="text/javascript" src="../lib/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="../source/jquery.fancybox.js"></script>
+    <script type="text/javascript" src="../../AS/as.resources.js"></script>
+    <script type="text/javascript" src="../../AS/as.sys.js"></script>
+    <script type="text/javascript" src="../../../Scripts/as.emails.js"></script>
+    <script type="text/javascript">
+        as.emails.init({
+            ajaxURLFormat: "/AsEmail/asSend"
+        });
+    </script>
+</body>
+</html>
