@@ -50,10 +50,10 @@ as.emails = {
             
             var body = '<div><div class="col-8"><div class="input-group mb-3">' +
                 '<input id="eCode" class="form-control" type="hidden" value="' + (data.email.code || '') + '" />' +
-                '<input id="eFrom" class="form-control" type="text" placeholder="От кого:" value="' + (data.email.from || '') + '" /><br />' +
-                '<input id="eTo" class="form-control" type="text" placeholder="Кому:" value="' + (data.email.to || '') + '" /><br />' +
-                '<input id="eCaption" class="form-control" type="text" placeholder="Тема письма" value="' + (data.email.caption || '') + '" /><br />' +
-                '<textarea id="eBody" class="form-control" cols="80" rows="10" placeholder="Текст письма">' + (data.email.body || '') + '</textarea>' +
+                '<lable class="control-label" for="eFrom">От:</lable><input id="eFrom" class="form-control" type="text" placeholder="От кого:" value="' + (data.email.from || '') + '" /><br />' +
+                '<label class="control-label" for="eTo">Кому:</label><input id="eTo" class="form-control" type="text" placeholder="Кому:" value="' + (data.email.to || '') + '" /><br />' +
+                '<label class="control-label" for="eCaption">Тема:</label><input id="eCaption" class="form-control" type="text" placeholder="Тема письма" value="' + (data.email.caption || '') + '" /><br />' +
+                '<label class="control-label" for="eBody">Текст:</label><textarea id="eBody" class="form-control" cols="80" rows="10" placeholder="Текст письма">' + (data.email.body || '') + '</textarea>' +
                 '</div></div></div>';
 
             as.sys.showDialog(title ? title : 'Отправка Email', body, 'Отправить', function () { as.emails.sendEmail(); }, true);

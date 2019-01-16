@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using as_Emails.Models;
 using as_Emails.BLL;
-
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
 using System.Data.SqlClient;
 using Dapper;
 using System.Diagnostics;
@@ -18,7 +21,7 @@ namespace as_Emails.BLL
     {
         #region Setup
         private Repo repo = new Repo("core");
-        
+
         private EmailSettings _defaultSettings { get; set; } = new EmailSettings {
 
             From = "phoenix.rfa@yandex.ru",
@@ -84,13 +87,13 @@ namespace as_Emails.BLL
 
                 var log = new EmailLogItem
                 {
-                    createdBy = "UserName",
+                    createdBy = getUserName(),
                     emailID = email.id,
                     from = from,
                     to = to,
                     subject = subject,
                     text = body,
-                    details = "Debug"
+                    details = ""
                 };
                 _logEmail(log);
 
@@ -108,12 +111,7 @@ namespace as_Emails.BLL
         {
             var builder = new BodyBuilder();
             MimeMessage mail = new MimeMessage();
-
-            from = "phoenix.rfa@yandex.ru";
-            to = "gralukkr@gmail.com";
-            //bcc = "phoenix.rfa@yandex.ru";
-            //cc = "shareshar@yandex.ru";
-
+            
             mail.From.Add(new MailboxAddress(displayName, from));
             mail.To.Add(new MailboxAddress(to));
             mail.Subject = subject;
@@ -132,6 +130,11 @@ namespace as_Emails.BLL
             }
         }
 
+        protected string getUserName()
+        {
+            return HttpContext.Current.User.Identity.Name;
+        }
+
         private EmailItem _getEmailItem(string code)
         {
             EmailItem res;
@@ -142,11 +145,6 @@ namespace as_Emails.BLL
         private void _logEmail(EmailLogItem log)
         {
             repo.GetSQLItem<string>("dbo.as_logMails", new { log.createdBy, log.emailID, log.subject, log.text, log.from, log.to, log.details });
-        }
-
-        protected ApplicationIdentity _getUser()
-        {
-            return new ApplicationIdentity();
         }
     }
 }
