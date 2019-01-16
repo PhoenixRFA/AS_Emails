@@ -160,7 +160,32 @@ namespace RDL
 
         }
 
-   
+        //Grek
+        //public static void SendMail2(string from, string displayName, string to, List<MailAddress> bcc, List<MailAddress> cc, string subject, string body,
+        //   string mailServer, string mailUsername, string mailPassword, int port, bool ssl = true, string attach = "")
+        //{
+
+        //    var builder = new BodyBuilder();
+        //    MimeMessage mail = new MimeMessage();
+
+        //    mail.From.Add(new MailboxAddress("", from));
+        //    mail.To.Add(new MailboxAddress("", to.FirstOrDefault().Address));
+        //    mail.Subject = "Mail Subject";
+        //    builder.HtmlBody = "<html><body>Body Text";
+        //    builder.HtmlBody += "</body></html>";
+        //    mail.Body = builder.ToMessageBody();
+
+        //    using (var client = new MailKit.Net.Smtp.SmtpClient())
+        //    {
+        //        client.Connect(mailServer, 465, true);
+        //        client.AuthenticationMechanisms.Remove("XOAUTH2"); //' Do not use OAUTH2
+        //        client.Authenticate(mailUsername, mailPassword); //' Use a username / password to authenticate.
+        //        client.Send(mail);
+        //        client.Disconnect(true);
+        //    }
+        //}
+        //Grek
+
 
         // ненадежно
         public static void DirectMail() {

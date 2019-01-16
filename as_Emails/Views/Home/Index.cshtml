@@ -4,23 +4,43 @@
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
     <link rel="stylesheet" href="~/js/fancy/source/jquery.fancybox.css" type="text/css" />
+    @Styles.Render("~/Content/css")
 </head>
 <body>
     <div>
         <p>Lorem ipsum</p>
-        <a class='as-email' data-code='code1' data-param1='1111' data-param2='2222'>Click</a><br />
-        <a class='as-email' data-code='code2' data-param1='1111' data-param2='2222' data-param3='3333' data-param4='4444'>Click</a>
+        <a class='as-email' data-code='code1' data-param1='1111' data-param2='2222' href="#">Click 1</a><br />
+        <a class='as-email' data-code='code2' data-param1='1111' data-param2='2222' data-param3='3333' data-param4='4444' href="#">Click 2</a><br />
+        <a class='as-email' data-code='code3' data-user='Phoenix' data-forumname='Cat Lovers' data-title='!TITLE!' href="#">Click 3</a>
     </div>
-    <script type="text/javascript" src="~/Scripts/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="~/js/fancy/source/jquery.fancybox.js"></script>
+
+    <div class="modal fade" id="asModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <p>One fine body&hellip;</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary">ОК</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
     <script type="text/javascript" src="~/js/AS/as.resources.js"></script>
     <script type="text/javascript" src="~/js/AS/as.sys.js"></script>
     <script type="text/javascript" src="~/Scripts/as.emails.js"></script>
     <script type="text/javascript">
         as.emails.init({
-            ajaxURLFormat: "/AsEmail/asSend"
+            ajaxURLFormat: "/Email/{0}"
         });
     </script>
-    @*<script src="~/Scripts/code.js"></script>*@
 </body>
 </html>

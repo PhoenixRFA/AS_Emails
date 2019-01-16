@@ -11,6 +11,7 @@ namespace as_Emails.Models
         public DateTime created { get; set; }
         public string createdBy { get; set; }
         public int emailID { get; set; }
+        public string subject { get; set; }
         public string text { get; set; }
         public string from{ get; set; }
         public string to { get; set; }

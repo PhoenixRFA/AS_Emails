@@ -10,6 +10,7 @@ using Dapper;
 using System.Diagnostics;
 using System.Configuration;
 using System.Text.RegularExpressions;
+using MimeKit;
 
 namespace as_Emails.BLL
 {
@@ -17,54 +18,83 @@ namespace as_Emails.BLL
     {
         #region Setup
         private Repo repo = new Repo("core");
-        private EmailSettings _emailSettings { get; set; }
+        
+        private EmailSettings _defaultSettings { get; set; } = new EmailSettings {
 
-        public static EmailSettings DefaultSettings = new EmailSettings
-        {
-            From = "myEmail@mail.com",
-            To = "target@mail.com",
+            From = "phoenix.rfa@yandex.ru",
+            DisplayName = "Automatic Message Service",
+            To = "gralukkr@gmail.com",
+            Subject = "Default subject",
             Host = "smtp.yandex.ru",
-            UserName = "myLoginName",
-            Password = "some_password",
+            UserName = "phoenix.rfa@yandex.ru",
+            Password = "cmfumlpwxpgaxkyx",
             Port = 465,
             IsSSL = true
         };
 
-        public EmailManager(EmailSettings emailSettings)
+        public EmailManager(EmailSettings emailSettings = null)
         {
-            _emailSettings = emailSettings;
+            if (emailSettings != null) _defaultSettings = emailSettings;
+        }
+
+        private string parametersSubstitution(string source, string regex, Dictionary<string, string> parameters)
+        {
+            return Regex.Replace(source, @"{\w+}", x => parameters.ContainsKey(x.Value) ? parameters[x.Value] : "");
         }
         #endregion
 
-        public bool Send(string code, Dictionary<string, string> parameters, out string msg, string to = "", string from = "")
+        public EmailItem ShowMessage(string code, Dictionary<string, string> parameters, out string msg)
+        {
+            msg = "";
+            EmailItem email = null;
+
+            try
+            {
+                email = _getEmailItem(code);
+
+                if (email != null)
+                {
+                    email.subject = parametersSubstitution(email.subject, @"{\w+}", parameters);
+                    email.template = parametersSubstitution(email.template, @"{\w+}", parameters);
+                }
+                else { throw new Exception("Код не подходит ни к одному сообщению!"); }
+            }
+            catch(Exception e)
+            {
+                msg = "Ошибка получения шаблона сообщения!\n" + e.ToString();
+            }
+
+            return email;
+        }
+
+        public bool Send(string code, out string msg, string to = "", string from = "", string subject = "", string body = "")
         {
             var res = false;
             msg = "";
             try
             {
-                var email = _getSQLData(code);
+                var email = _getEmailItem(code);
 
-                if (email != null)
+                from = string.IsNullOrWhiteSpace(from) ? _defaultSettings.From : from;
+                to = string.IsNullOrWhiteSpace(to) ? _defaultSettings.To : to;
+                subject = string.IsNullOrWhiteSpace(subject) ? _defaultSettings.Subject : subject;
+
+                SendEmail(from, _defaultSettings.DisplayName, to, email.bcc, email.cc, subject, body, _defaultSettings.Host,
+                    _defaultSettings.UserName, _defaultSettings.Password, _defaultSettings.Port, _defaultSettings.IsSSL, "");
+
+                var log = new EmailLogItem
                 {
-                    var body = Regex.Replace(msg, @"{param\d+}", x => parameters.ContainsKey(x.Value) ? parameters[x.Value] : x.Value);
+                    createdBy = "UserName",
+                    emailID = email.id,
+                    from = from,
+                    to = to,
+                    subject = subject,
+                    text = body,
+                    details = "Debug"
+                };
+                _logEmail(log);
 
-                    msg = email.subject + "\n " + email.template;
-
-                    var log = new EmailLogItem
-                    {
-                        created = DateTime.Now,
-                        createdBy = "UserName",
-                        emailID = email.id,
-                        from = _emailSettings.From,
-                        to = _emailSettings.To,
-                        text = msg,
-                        details = "Debug"
-                    };
-
-                    _sendEmailMessage(email.to, email.subject, body, email.bcc, email.cc);
-                    res = true;
-                }
-                else { throw new Exception("Код не подходит ни к одному сообщению!"); }
+                res = true;
             }
             catch (Exception e)
             {
@@ -73,36 +103,50 @@ namespace as_Emails.BLL
             return res;
         }
 
-        private void _sendEmailMessage(string to, string subject, string body, string bcc, string cc)
+        protected void SendEmail(string from, string displayName, string to, string bcc, string cc, string subject, string body,
+            string mailServer, string mailUsername, string mailPassword, int port, bool ssl = true, string attach = "")
         {
-            RDL.Email.SendMail(to, bcc, cc, subject, body);
-            //RDL.Email.SendMail("wrkngbx@gmail.com", "", "", subject, body);
+            var builder = new BodyBuilder();
+            MimeMessage mail = new MimeMessage();
+
+            from = "phoenix.rfa@yandex.ru";
+            to = "gralukkr@gmail.com";
+            //bcc = "phoenix.rfa@yandex.ru";
+            //cc = "shareshar@yandex.ru";
+
+            mail.From.Add(new MailboxAddress(displayName, from));
+            mail.To.Add(new MailboxAddress(to));
+            mail.Subject = subject;
+            builder.HtmlBody = body;
+            mail.Body = builder.ToMessageBody();
+            if (!string.IsNullOrWhiteSpace(bcc)) mail.Bcc.AddRange(bcc.Split(',').Select(x => { return new MailboxAddress(x.Trim()); }));
+            if (!string.IsNullOrWhiteSpace(cc)) mail.Cc.AddRange(cc.Split(',').Select(x => { return new MailboxAddress(x.Trim()); }));
+
+            using (var client = new MailKit.Net.Smtp.SmtpClient())
+            {
+                client.Connect(mailServer, port, ssl);
+                client.AuthenticationMechanisms.Remove("XOAUTH2"); //' Do not use OAUTH2
+                client.Authenticate(mailUsername, mailPassword); //' Use a username / password to authenticate.
+                client.Send(mail);
+                client.Disconnect(true);
+            }
         }
 
-        private EmailItem _getSQLData(string code)
+        private EmailItem _getEmailItem(string code)
         {
             EmailItem res;
             res = repo.GetSQLItem<EmailItem>("dbo.as_getMails", new { code });
             return res;
         }
 
-        //private EmailItem _getEmailItem(string code)
-        //{
-        //    return new EmailItem { id = 1, code = "someCode", from = "myEmail@mail.com", to = "otherEmail@mail.com",
-        //        subject = "Subject", template = "Message. Hello {param1} Welcome!", bcc = "myAnotherEmail@mail.com" };
-        //}
+        private void _logEmail(EmailLogItem log)
+        {
+            repo.GetSQLItem<string>("dbo.as_logMails", new { log.createdBy, log.emailID, log.subject, log.text, log.from, log.to, log.details });
+        }
 
-        //private void _setSQLData(EmailLogItem log)
-        //{
-        //    if (log == null) return;
-        //    string conString = ConfigurationManager.ConnectionStrings["core"].ConnectionString;
-        //    using (var conn = new SqlConnection(conString))
-        //    {
-        //        conn.Open();
-        //        var res = conn.Query("INSERT dbo.as_emailsLog VALUES (@date, @createdBy, @emailID, @text, @from, @to, @details)",
-        //            new { date = log.created,log.createdBy, log.emailID, log.text, log.from, log.to, log.details } );
-        //        Debug.Write(res);
-        //    }
-        //}
+        protected ApplicationIdentity _getUser()
+        {
+            return new ApplicationIdentity();
+        }
     }
 }
