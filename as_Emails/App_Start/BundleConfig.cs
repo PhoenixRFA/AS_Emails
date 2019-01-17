@@ -25,9 +25,18 @@ namespace as_Emails
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/jquery.bootstrap-growl.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/AS").Include(
+                        "~/js/AS/as.resources.js",
+                        "~/js/AS/as.sys.js",
+                        "~/Scripts/as.emails.js"));
+
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new StyleBundle("~/Content/fancy").Include(
+                      "~/js/fancy/source/jquery.fancybox.css"));
         }
     }
 }

@@ -53,6 +53,7 @@ namespace as_Emails.BLL
 
             try
             {
+                if (!_hasAccess()) throw new Exception("Недостаточный уровень доступа!");
                 email = _getEmailItem(code);
 
                 if (email != null)
@@ -76,26 +77,19 @@ namespace as_Emails.BLL
             msg = "";
             try
             {
+                if (!_hasAccess()) throw new Exception("Недостаточный уровень доступа!");
                 var email = _getEmailItem(code);
 
                 from = string.IsNullOrWhiteSpace(from) ? _defaultSettings.From : from;
                 to = string.IsNullOrWhiteSpace(to) ? _defaultSettings.To : to;
                 subject = string.IsNullOrWhiteSpace(subject) ? _defaultSettings.Subject : subject;
 
-                SendEmail(from, _defaultSettings.DisplayName, to, email.bcc, email.cc, subject, body, _defaultSettings.Host,
-                    _defaultSettings.UserName, _defaultSettings.Password, _defaultSettings.Port, _defaultSettings.IsSSL, "");
+                email.from = from; email.to = to; email.subject = subject; email.template = body;
 
-                var log = new EmailLogItem
-                {
-                    createdBy = getUserName(),
-                    emailID = email.id,
-                    from = from,
-                    to = to,
-                    subject = subject,
-                    text = body,
-                    details = ""
-                };
-                _logEmail(log);
+                //SendEmail(email.id, from, _defaultSettings.DisplayName, to, email.bcc, email.cc, subject, body, _defaultSettings.Host,
+                //    _defaultSettings.UserName, _defaultSettings.Password, _defaultSettings.Port, getUserName(), _defaultSettings.IsSSL, "");
+
+                SendEmail(email, _defaultSettings.DisplayName, _defaultSettings.Host, _defaultSettings.UserName, _defaultSettings.Password, _defaultSettings.Port, _getUserName());
 
                 res = true;
             }
@@ -106,8 +100,43 @@ namespace as_Emails.BLL
             return res;
         }
 
-        protected void SendEmail(string from, string displayName, string to, string bcc, string cc, string subject, string body,
-            string mailServer, string mailUsername, string mailPassword, int port, bool ssl = true, string attach = "")
+        protected void SendEmail(EmailItem email, string displayName, string mailServer, string mailUsername, string mailPassword, int port, string userName, bool ssl = true, string attach = "")
+        {
+            var builder = new BodyBuilder();
+            MimeMessage mail = new MimeMessage();
+
+            mail.From.Add(new MailboxAddress(displayName, email.from));
+            mail.To.Add(new MailboxAddress(email.to));
+            mail.Subject = email.subject;
+            builder.HtmlBody = email.template;
+            mail.Body = builder.ToMessageBody();
+            if (!string.IsNullOrWhiteSpace(email.bcc)) mail.Bcc.AddRange(email.bcc.Split(',').Select(x => { return new MailboxAddress(x.Trim()); }));
+            if (!string.IsNullOrWhiteSpace(email.cc)) mail.Cc.AddRange(email.cc.Split(',').Select(x => { return new MailboxAddress(x.Trim()); }));
+
+            using (var client = new MailKit.Net.Smtp.SmtpClient())
+            {
+                client.Connect(mailServer, port, ssl);
+                client.AuthenticationMechanisms.Remove("XOAUTH2"); //' Do not use OAUTH2
+                client.Authenticate(mailUsername, mailPassword); //' Use a username / password to authenticate.
+                client.Send(mail);
+                client.Disconnect(true);
+            }
+
+            var log = new EmailLogItem
+            {
+                createdBy = _getUserName(),
+                emailID = email.id,
+                from = email.from,
+                to = email.to,
+                subject = email.subject,
+                text = email.template,
+                details = ""
+            };
+            _logEmail(log);
+        }
+
+        protected void SendEmail(int emailID, string from, string displayName, string to, string bcc, string cc, string subject, string body,
+            string mailServer, string mailUsername, string mailPassword, int port, string userName, bool ssl = true, string attach = "")
         {
             var builder = new BodyBuilder();
             MimeMessage mail = new MimeMessage();
@@ -128,11 +157,28 @@ namespace as_Emails.BLL
                 client.Send(mail);
                 client.Disconnect(true);
             }
+
+            var log = new EmailLogItem
+            {
+                createdBy = _getUserName(),
+                emailID = emailID,
+                from = from,
+                to = to,
+                subject = subject,
+                text = body,
+                details = ""
+            };
+            _logEmail(log);
         }
 
-        protected string getUserName()
+        protected string _getUserName()
         {
             return HttpContext.Current.User.Identity.Name;
+        }
+
+        protected bool _hasAccess()
+        {
+            return HttpContext.Current.User.Identity.Name == "wrkngbx";
         }
 
         private EmailItem _getEmailItem(string code)

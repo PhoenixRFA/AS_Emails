@@ -1,26 +1,9 @@
-﻿String.prototype.format = function () {
-    var s = this,
-        i = arguments.length;
-
-    while (i--) {
-        s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
-    }
-    return s;
-};
-
-// <a class='as-email' data-code='code1' data-param1='1111' data-param2='2222'>Click</a>
+﻿// <a class='as-email' data-code='code1' data-title='Dialog Title' data-param1='2222' href='#'>Click</a>
 var as = as || {};
 
 as.emails = {
     options: {
-        ajaxURLFormat: "/serv/form.aspx/{0}",
-        //from: "default@email.com",
-        //to: "target@email.com",
-        //port..?
-        //user..?
-        //pass..?
-        //etc...?
-        //dispName: "Automatic Bot"
+        ajaxURLFormat: "/serv/form.aspx/{0}"
 
     },
     init: function (options) {
@@ -32,8 +15,8 @@ as.emails = {
     },
     showDialog: function (btn) {
         var code = btn.data('code');
-        var parameters = new Object();
         var title = btn.data('title');
+        var parameters = new Object();
 
         $.each(btn.data(), function (i, item) {
             if (i != 'title' && i != 'code') parameters["{" + i + "}"] = item;
@@ -41,25 +24,24 @@ as.emails = {
         
         var params = { code: code, parameters: parameters };
         as.sys.ajaxSend(as.emails.options.ajaxURLFormat.format('showMessage'), params, function (data) {
-            if (typeof (data) != "object") data = eval('(' + data + ')');
             if (!data.result) {
-                as.sys.bootstrapAlert("Ошибка!", { type: 'danger' });
+                as.sys.bootstrapAlert("Ошибка при отправке сообщения!", { type: 'danger' });
                 console && console.log(data.msg);
                 return;
             }
             
-            var body = '<div><div class="col-8"><div class="input-group mb-3">' +
-                '<input id="eCode" class="form-control" type="hidden" value="' + (data.email.code || '') + '" />' +
-                '<lable class="control-label" for="eFrom">От:</lable><input id="eFrom" class="form-control" type="text" placeholder="От кого:" value="' + (data.email.from || '') + '" /><br />' +
-                '<label class="control-label" for="eTo">Кому:</label><input id="eTo" class="form-control" type="text" placeholder="Кому:" value="' + (data.email.to || '') + '" /><br />' +
-                '<label class="control-label" for="eCaption">Тема:</label><input id="eCaption" class="form-control" type="text" placeholder="Тема письма" value="' + (data.email.caption || '') + '" /><br />' +
+            var body = '<div class="">' +
+                '<input id="eCode" type="hidden" value="' + (data.email.code || '') + '" />' +
+                '<div class="input-group mb-2"><span class="input-group-addon">От: &nbsp; &nbsp;</span><input id="eFrom" class="form-control" type="text" placeholder="От кого:" value="' + (data.email.from || '') + '" /></div>' +
+                '<div class="input-group mb-2"><span class="input-group-addon">Кому:</span><input id="eTo" class="form-control" type="text" placeholder="Кому:" value="' + (data.email.to || '') + '" /></div>' +
+                '<div class="input-group mb-2"><span class="input-group-addon">Тема:</span><input id="eCaption" class="form-control" type="text" placeholder="Тема письма" value="' + (data.email.caption || '') + '" /></div>' +
                 '<label class="control-label" for="eBody">Текст:</label><textarea id="eBody" class="form-control" cols="80" rows="10" placeholder="Текст письма">' + (data.email.body || '') + '</textarea>' +
-                '</div></div></div>';
+                '</div>';
 
             as.sys.showDialog(title ? title : 'Отправка Email', body, 'Отправить', function () { as.emails.sendEmail(); }, true);
-            });
+            }, true);
     },
-    sendEmail: function (btn) {
+    sendEmail: function () {
         var code = $('#eCode').val();
         var from = $('#eFrom').val();
         var to = $('#eTo').val();
@@ -77,13 +59,15 @@ as.emails = {
             return;
         }
 
+        as.sys.closeDialog();
         var params = {code: code, from: from, to: to, subject: caption, body: text };
 
         as.sys.ajaxSend(as.emails.options.ajaxURLFormat.format('send'), params, function (data) {
-            if (typeof (data) != "object") data = eval('(' + data + ')');
-
-            as.sys.showMessage(data.result ? 'Сообщение успешно отправлено\n' + data.msg : 'Ошибка при отправке сообщения\n' + data.msg);
-        });
+            //as.sys.showMessage(data.result ? 'Сообщение успешно отправлено\n' + data.msg : 'Ошибка при отправке сообщения\n' + data.msg);
+            if (data.result) as.sys.bootstrapAlert('Сообщение успешно отправлено!', { type: 'success' });
+            else as.sys.bootstrapAlert("Ошибка при отправке сообщения!", { type: 'danger' });
+           console && console.log(data.msg);
+        }, true);
     }
 }
 

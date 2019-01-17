@@ -1,21 +1,29 @@
 ﻿using as_Emails.BLL;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
 
 namespace as_Emails.Controllers
 {
     public class EmailController : Controller
     {
+        #region MyEmailManager
+        public MyEmailManager myMng = new MyEmailManager(new Models.EmailSettings { Host = "smtp.google.com", Port = 465, UserName = "g_User", Password = "qwerty", DisplayName = "Anon" });
+        
+        public ActionResult someMethod()
+        {
+            var msg = "";
+
+            var item = myMng.ShowMessage("", null, out msg);
+            myMng.Send("",out msg, "+7888124567", "+7888124567", "", "Text");
+
+            return Json(new { item });
+        }
+        #endregion
+
         public EmailManager mng = new EmailManager();
 
-        public ActionResult showMessage(string code, Dictionary<string, string> parameters)
+        public ActionResult ShowMessage(string code, Dictionary<string, string> parameters)
         {
             var msg = "";
             Models.EmailItem res = null;
@@ -25,16 +33,17 @@ namespace as_Emails.Controllers
                 res = mng.ShowMessage(code, parameters, out msg);
             }
 
+            var result = res == null ? false : true;
             var json = JsonConvert.SerializeObject(new
             {
-                result = res == null ? false : true,
+                result,
                 msg,
-                email = res == null ? null : new { res.code, res.from, res.to, caption = res.subject, body = res.template }
+                email = result ? new { res.code, res.from, res.to, caption = res.subject, body = res.template } : null
             });
             return Content(json, "application/json");
         }
 
-        public ActionResult send(string code, string from, string to, string subject, string body)
+        public ActionResult Send(string code, string from, string to, string subject, string body)
         {
             var res = false;
             var msg = "";
