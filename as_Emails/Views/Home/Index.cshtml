@@ -1,8 +1,10 @@
 ﻿<div>
+    <br />
+    @Html.ActionLink("Go to CRUD", "Index", "Email")
     <p>Lorem ipsum</p>
     <a class='as-email' data-code='code1' data-param1='1111' data-param2='2222' href="#">Click 1</a><br />
     <a class='as-email' data-code='code2' data-param1='1111' data-param2='2222' data-param3='3333' data-param4='4444' href="#">Click 2</a><br />
-    <a class='as-email' data-code='code3' data-user='Phoenix' data-forumname='Cat Lovers' data-title='!TITLE!' href="#">Click 3</a><br />
+    <a class="as-email" data-code="code3" data-user="Phoenix" data-forumname="Cat Lovers" data-title="!TITLE!" data-before-link="<br><a href='#'>" data-after-link="</a>" href="#">Click 3</a><br />                                                                                                                                                                                              <a class="as-email" data-code="code4" data-fio="Ивонов Иван Иванович" data-forum-name="ФорРум" href="#" data-name="4" data-admin-name="Admin">Click 4!</a><br />
     <a class='as-email' data-code='' data-param1='1111' data-param2='2222' href="#">Error!</a>
 </div>
 

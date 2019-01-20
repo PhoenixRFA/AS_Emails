@@ -30,3 +30,26 @@ textarea {
 .form-control {
     max-width: 100%;
 }
+
+.usTemplate {
+    min-height: 200px;
+    resize: vertical;
+}
+
+.input-group {
+    width: 100%;
+}
+
+.input-group-addon {
+    width: 80px;
+} 
+
+.fa-remove:before {
+    content: "\f00d";
+}
+
+/*a.editable-click {
+    color: black;
+    text-decoration: none;
+    border-bottom: none;
+}*/

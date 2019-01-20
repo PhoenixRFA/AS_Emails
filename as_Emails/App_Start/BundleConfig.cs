@@ -23,20 +23,32 @@ namespace as_Emails
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
+                      "~/js/editable/bootstrap-editable.js",
                       "~/Scripts/jquery.bootstrap-growl.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/AS").Include(
                         "~/js/AS/as.resources.js",
                         "~/js/AS/as.sys.js",
-                        "~/Scripts/as.emails.js"));
+                        "~/js/AS/as.tools.js",
+                        "~/js/AS/as.makeup.js",
+                        "~/js/chosen/chosen.jquery.js",
+                        //"~/js/pagination/pagination.min.js",
+                        "~/js/AS/as.crud2.js",
+                        "~/js/AS/as.emails.js"));
 
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
+                      "~/Content/bootstrap-editable.css",
+                      "~/Content/fa/all.css",
                       "~/Content/site.css"));
 
             bundles.Add(new StyleBundle("~/Content/fancy").Include(
                       "~/js/fancy/source/jquery.fancybox.css"));
+
+            bundles.Add(new StyleBundle("~/Content/AS").Include(
+                      "~/Content/as.crud2.css",
+                      "~/Content/chosen.min.css"));
         }
     }
 }

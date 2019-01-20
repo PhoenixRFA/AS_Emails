@@ -177,7 +177,9 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="BLL\MyEmailManager.cs" />
+    <Compile Include="BLL\IEmailCRUDManager.cs" />
+    <Compile Include="BLL\RDL\Convert.cs" />
+    <Compile Include="Models\AjaxModel.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="BLL\Email.cs" />
     <Compile Include="BLL\EmailManager.cs" />
@@ -200,16 +202,92 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Emails.mdf" />
+    <Content Include="App_Data\Emails_log.ldf">
+      <DependentUpon>Emails.mdf</DependentUpon>
+    </Content>
+    <Content Include="Content\as.crud2.css" />
+    <Content Include="Content\bootstrap-editable.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\chosen-sprite%402x.png" />
+    <Content Include="Content\chosen-sprite.png" />
+    <Content Include="Content\chosen.min.css" />
+    <Content Include="Content\fa\all.css" />
+    <Content Include="Content\fa\all.min.css" />
+    <Content Include="Content\images\ad.png" />
+    <Content Include="Content\images\ajax-loader.gif" />
+    <Content Include="Content\images\Analytics.png" />
+    <Content Include="Content\images\arDown.png" />
+    <Content Include="Content\images\arRight.png" />
+    <Content Include="Content\images\arrow-bottom.png" />
+    <Content Include="Content\images\arrow-left.png" />
+    <Content Include="Content\images\arrow-right.png" />
+    <Content Include="Content\images\arrow-top.png" />
+    <Content Include="Content\images\backLines.png" />
+    <Content Include="Content\images\cdbg.png" />
+    <Content Include="Content\images\center.png" />
+    <Content Include="Content\images\copy.png" />
+    <Content Include="Content\images\delete.png" />
+    <Content Include="Content\images\domain.png" />
+    <Content Include="Content\images\down.png" />
+    <Content Include="Content\images\down1.png" />
+    <Content Include="Content\images\download.png" />
+    <Content Include="Content\images\expand.png" />
+    <Content Include="Content\images\favicon.ico" />
+    <Content Include="Content\images\file.png" />
+    <Content Include="Content\images\filemanager.png" />
+    <Content Include="Content\images\fillings.png" />
+    <Content Include="Content\images\folder.png" />
+    <Content Include="Content\images\fullscreen.png" />
+    <Content Include="Content\images\fullscreenExit.png" />
+    <Content Include="Content\images\icon1.png" />
+    <Content Include="Content\images\icon2.png" />
+    <Content Include="Content\images\items.png" />
+    <Content Include="Content\images\left.png" />
+    <Content Include="Content\images\logo.jpg" />
+    <Content Include="Content\images\minus.png" />
+    <Content Include="Content\images\next.gif" />
+    <Content Include="Content\images\nophoto.png" />
+    <Content Include="Content\images\open.png" />
+    <Content Include="Content\images\plus.png" />
+    <Content Include="Content\images\prev.gif" />
+    <Content Include="Content\images\progressbar.gif" />
+    <Content Include="Content\images\projects-bg.png" />
+    <Content Include="Content\images\resize.png" />
+    <Content Include="Content\images\right.png" />
+    <Content Include="Content\images\save.png" />
+    <Content Include="Content\images\settings.png" />
+    <Content Include="Content\images\sr.png" />
+    <Content Include="Content\images\style.png" />
+    <Content Include="Content\images\template.png" />
+    <Content Include="Content\images\test.png" />
+    <Content Include="Content\images\time_sheduled-16.png" />
+    <Content Include="Content\images\tools.png" />
+    <Content Include="Content\images\up.png" />
+    <Content Include="Content\images\upload.png" />
+    <Content Include="Content\images\vk_ico.png" />
+    <Content Include="Content\images\zoom.png" />
+    <Content Include="img\clear.png" />
+    <Content Include="img\loading.gif" />
+    <Content Include="Content\webfonts\fa-brands-400.svg" />
+    <Content Include="Content\webfonts\fa-regular-400.svg" />
+    <Content Include="Content\webfonts\fa-solid-900.svg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="js\AS\as.crud2.js" />
+    <Content Include="js\AS\as.makeup.js" />
     <Content Include="js\AS\as.resources.js" />
     <Content Include="js\AS\as.sys.js" />
+    <Content Include="js\AS\as.tools.js" />
+    <Content Include="js\chosen\chosen.jquery.js" />
+    <Content Include="js\chosen\chosen.jquery.min.js" />
+    <Content Include="js\editable\bootstrap-editable.js" />
+    <Content Include="js\editable\bootstrap-editable.min.js" />
     <Content Include="js\fancy\demo\1_b.jpg" />
     <Content Include="js\fancy\demo\1_s.jpg" />
     <Content Include="js\fancy\demo\2_b.jpg" />
@@ -241,14 +319,28 @@
     <Content Include="js\fancy\source\jquery.fancybox.css" />
     <Content Include="js\fancy\source\jquery.fancybox.js" />
     <Content Include="js\fancy\source\jquery.fancybox.pack.js" />
+    <Content Include="js\pagination\jquery.pagination.js" />
+    <Content Include="js\pagination\pagination.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="js\fancy\.gitattributes" />
     <Content Include="js\fancy\CHANGELOG.md" />
     <Content Include="js\fancy\README.md" />
     <Content Include="js\fancy\sprite.psd" />
+    <Content Include="Content\webfonts\fa-brands-400.eot" />
+    <Content Include="Content\webfonts\fa-brands-400.ttf" />
+    <Content Include="Content\webfonts\fa-brands-400.woff" />
+    <Content Include="Content\webfonts\fa-brands-400.woff2" />
+    <Content Include="Content\webfonts\fa-regular-400.eot" />
+    <Content Include="Content\webfonts\fa-regular-400.ttf" />
+    <Content Include="Content\webfonts\fa-regular-400.woff" />
+    <Content Include="Content\webfonts\fa-regular-400.woff2" />
+    <Content Include="Content\webfonts\fa-solid-900.eot" />
+    <Content Include="Content\webfonts\fa-solid-900.ttf" />
+    <Content Include="Content\webfonts\fa-solid-900.woff" />
+    <Content Include="Content\webfonts\fa-solid-900.woff2" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
-    <Content Include="Scripts\as.emails.js" />
+    <Content Include="js\AS\as.emails.js" />
     <Content Include="Scripts\code.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -263,7 +355,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -293,10 +387,9 @@
     <Content Include="Views\Manage\ManageLogins.cshtml" />
     <Content Include="Views\Manage\SetPassword.cshtml" />
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
+    <Content Include="Views\Email\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace as_Emails.BLL
 {
-    interface IEmailManager
+    public interface IEmailManager
     {
         bool Send(string code, out string msg, string to = "", string from = "", string subject = "", string body = "");
 

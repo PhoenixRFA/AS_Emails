@@ -1,0 +1,123 @@
+﻿
+.crd2Table{  margin-bottom: 2px; }
+.crd2Title { display: inline-block; margin-right: 20px;}
+.crd2TitleTooltip { display: inline-block; margin-left: 8px;}
+.crd2Toolbar { display: inline-block; position: relative; top: -7px; }
+.as-text-edit {  position: absolute; top: 5px; left: 5px; }
+  .crd2Filter{ margin: 10px 0;}
+    .crd2OtherOperation{ display: inline-block; margin-right: 12px;}
+    
+
+    .crd2GroupOperations{ display: inline-block; margin-left: 20px;}
+    .crd2SortUp { background: url('images/up.png') no-repeat 0 0; background-position: right center; text-transform: uppercase; }
+    .crd2SortDown { background: url('images/down.png') no-repeat 0 0; background-position: right center; text-transform: uppercase; }
+    
+    .crd2SortUp2 { background: url('images/up2.png') no-repeat 0 0; background-position: right center; text-transform: uppercase; }
+    .crd2SortDown2 { background: url('images/down2.png') no-repeat 0 0; background-position: right center; text-transform: uppercase; }
+    
+    
+    .glyphicon-move{  background: url('images/move.png') no-repeat 0 0; background-position: right center; position: relative; top: 3px; left: -5px; cursor: move;}
+    .hide{ display: none;}
+    
+    
+    .crd2CommentAddLink{ width: 200px; height: 70px; display: inline-block; margin-left: 3px; position: relative; top: -30px; padding-top: 25px;  }
+    .crd2CommentText { width: 500px; height: 70px;}
+    .hide{ display: none;}
+    
+    .crd2ReplceFrom{ display: inline-block; margin: 0 5px;} 
+
+    .crd2PagingwrapperUp .pagination{ margin-top: 0;}
+
+    .crd2Pagingwrapper{ text-align: right; width: 30%; }
+   .crd2PagingwrapperDown{ display: block; width: 100%; }
+.crd2PagingwrapperUp{ float: right; max-width: 470px; width: auto;}
+
+.pagingcontainer {
+    display: inline-block;
+}
+   .pagingcontainer a { border-radius: 3px; }
+    .crd2FilterItems{ vertical-align: bottom; display: inline-block; width: 60%; }
+    .crd2FilterItem { display: inline-block; margin: 1px;   }
+    .crd2FilterItem .as-checkboxes label {  display: inline-block;   margin-right: 10px; font-weight: normal; }
+    .crd2FilterItem .as-checkboxes input {  display: inline-block;   margin-right: 3px; position: relative; top: 2px;  }
+    .crd2FilterItem .form-control { display: inline-block;  width: 150px;  }
+    .crd2ResetFilterLink{ margin:0  3px;}
+    .crd2PredefinedFilters {  margin: 5px 0; }
+    .crd2PredefinedFilters a.crd2PredefinedFilterLink { display: inline-block; margin-right: 2px;  }
+
+    .crd2FNewTypicalFilter { display: inline-block; width: 250px; margin-right: 2px; position: relative; top: 1px; }
+    .crd2TypicalFilter{ display: inline-block; margin: 1px;}
+
+
+    .crd2Table  .editable-input textarea.form-control{ width: 600px; height: 200px; }
+    .crd2Frozen{ position: fixed; top: 0; width: 100%; background: #f6f6f6; padding: 3px; border-bottom: solid 1px #ccc; z-index: 1000;}
+    .crd2FrozenToolbar h3, .crd2FrozenToolbar div{ display: inline-block; margin: 0; padding: 0; margin-right: 10px;line-height: 1em; font-size: 14px;}
+    .crd2FrozenToolbar .btn{ padding: 2px 5px; font-size: 12px; }
+
+    @media only screen and (max-width: 800px) {
+    .crd2Frozen>table{ display: none;}
+    /* Force table to not be like tables anymore */
+	div[data-g] table, 
+	div[data-g] thead, 
+	div[data-g] tbody, 
+	div[data-g] th, 
+	div[data-g] td, 
+	div[data-g] tr { 
+		display: block; 
+	}
+ 
+	/* Hide table headers (but not display: none;, for accessibility) */
+	div[data-g] thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+ 
+	div[data-g] tr { border: 1px solid #ccc; }
+ 
+	div[data-g] td { 
+		/* Behave  like a "row" */
+		border: none !important;
+		border-bottom: 1px solid #eee !important; 
+		position: relative;
+		padding-left: 50% !important; 
+		white-space: normal;
+		text-align:left;
+	}  
+
+ 
+	div[data-g] td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+		text-align:left;
+		font-weight: bold;
+	}
+  
+	/*
+	Label the data
+	*/
+	div[data-g] td:before { content: attr(title); }
+ 
+    /*table comments*/
+    div[data-g]  .crd2AddRow td {
+        padding-left: 5px !important;
+        width: auto !important; 
+        max-width: initial !important;
+    }
+   div[data-g] .crd2AddRow td:before { 		
+		width:0; 	
+	}
+   div[data-g] .crd2AddRow td:before { content: ''; }
+   .crd2CommentText{ width: 100%;}
+   .crd2CommentAddLink{ width: 100%; top: 0; left: 0; margin-left: 0; height: auto; padding:10px 0;}
+ 
+ 
+       .crd2Item{ max-width: none !important; overflow: visible !important;}
+}
+

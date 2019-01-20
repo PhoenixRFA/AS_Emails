@@ -1,0 +1,143 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+@Html.ActionLink("Go to Index", "Index", "Home")
+<h2>AS Emails CRUD</h2>
+<div class="usCont"></div>
+
+@section scripts {
+    <script type="text/javascript">
+        var us = {
+            init: function () {
+                as.crud2.init({
+                    enableFrozenHeader: true
+                });
+                us.initMainTable();
+                $(document).delegate(".usCreateItem", "click", function (e) {
+                    e.preventDefault();
+                    us.createItem();
+                });
+            },
+            initMainTable: function () {
+                var cols = [
+                    { code: "id", title: "ID", tooltip: "Идентификатор", isVisible: false, isPK: true, datatype: "int" },
+                    { code: "code", title: "Код", tooltip: "Код шаблона", isVisible: true, datatype: "string", isSort: true, editable: { type: "text", placement: 'inline' } },
+                    { code: "from", title: "От", tooltip: "Адрес отправителя", isVisible: true, datatype: "string", isSort: true, editable: { type: "text" } },
+                    { code: "to", title: "Кому", tooltip: "Адрес получателя", isVisible: true, datatype: "string", isSort: true, editable: { type: "text" } },
+                    { code: "subject", title: "Тема", tooltip: "Тема шаблона", isVisible: true, datatype: "string", isSort: true, editable: { type: "textarea", placement: 'bottom' } },
+                    { code: "template", title: "Текст", tooltip: "Текст шаблона", isVisible: true, datatype: "string", isSort: true, editable: { type: "textarea", placement: 'bottom' } },
+                    { code: "cc", title: "CC", tooltip: "Копия", isVisible: true, datatype: "string", isSort: true, editable: { type: "text" } },
+                    { code: "bcc", title: "BCC", tooltip: "Скрытая копия", isVisible: true, datatype: "string", isSort: true, editable: { type: "text" } },
+                ];
+
+                as.crud2.initTable({
+                    cont: $('.usCont'),
+                    immediatelyLoad: true,
+                    title: "Документы",
+                    toolbarAdditional: "<a href ='#' class='btn btn-primary usCreateItem'>Создать</a>",
+                    groupOperationsToolbar: "",
+                    ajaxURLFormat: "/Email/{0}",
+                    inlineAjaxURL: "/Email/EditItem",
+                    pageSize: 10,
+                    cookiePrefix: "as-crud-emails-",
+                    emptyText: "Данных нет",
+                    filterLinkTitle: "Найти",
+                    showChecksCol: false,
+                    showNumsCol: true,
+                    showToolbar: true,
+                    showExcelExport: false,
+                    additionalSort: false,
+                    ctrlClickShowComment: false,
+                    cols: cols,
+                    datailsCallback: null,
+                    operations: {
+                        remove: true,
+                        comments: false,
+                        other: []
+                    },
+                    predefinedFilterLinks: [],
+                    getFilterMakeup: function (filter) {
+                        var s = "";
+                        s += "<input type='text' placeholder='Код' class='codeFilter form-control' value ='" + (filter.text || '') + "' />";
+                        return s;
+                    },
+                    filter: function () {
+                        var filter = {
+                            code: $('.codeFilter').val() || ""
+                        };
+                        return filter;
+                    },
+                    processRowCallback: null
+                });
+            },
+            createItem: function () {
+                var s = "";
+                s += "<div>";
+                s += "<div class='input-group mb-2'><span class='input-group-addon'>Код</span><input type='text' class='form-control usCode' /></div>";
+                s += "<div class='input-group mb-2'><span class='input-group-addon'>От</span><input type='text' class='form-control usFrom' /></div>";
+                s += "<div class='input-group mb-2'><span class='input-group-addon'>Кому</span><input type='text' class='form-control usTo' /></div>";
+                s += "<div class='input-group mb-2'><span class='input-group-addon'>Тема</span><input type='text' class='form-control usCaption' /></div>";
+                s += "<div class='input-group mb-2'><span class='input-group-addon'>Шаблон</span><textarea class='form-control usTemplate' /></textarea></div>";
+                s += "<div class='input-group mb-2'><span class='input-group-addon'>CC</span><input type='text' class='form-control usCc' /></div>";
+                s += "<div class='input-group mb-2'><span class='input-group-addon'>BCC</span><input type='text' class='form-control usBcc' /></div>";
+                s += "</div>";
+
+                as.sys.showDialog("Новый документ", s, "Сохранить", function () {
+                    var code = $('.usCode').val();
+                    var from = $('.usFrom').val();
+                    var to = $('.usTo').val();
+                    var caption = $('.usCaption').val();
+                    var template = $('.usTemplate').val();
+                    var cc = $('.usCc').val();
+                    var bcc = $('.usBcc').val();
+
+                    if (!code.trim()) {
+                        as.sys.bootstrapAlert("Поле \"Код:\" не заполнено!", { type: 'warning' });
+                        $('.usCode').focus();
+                        return;
+                    }
+                    if (!from.trim()) {
+                        as.sys.bootstrapAlert("Поле \"От:\" не заполнено!", { type: 'warning' });
+                        $('.usFrom').focus();
+                        return;
+                    }
+                    if (!to.trim()) {
+                        as.sys.bootstrapAlert("Поле \"Кому:\" не заполнено!", { type: 'warning' });
+                        $('.usTo').focus();
+                        return;
+                    }
+                    if (!caption.trim()) {
+                        as.sys.bootstrapAlert("Поле \"Тема:\" не заполнено!", { type: 'warning' });
+                        $('.usCaption').focus();
+                        return;
+                    }
+                    if (!template.trim()) {
+                        as.sys.bootstrapAlert("Поле \"Текст:\" не заполнено!", { type: 'warning' });
+                        $('.usTemplate').focus();
+                        return;
+                    }
+
+                    var params = { code, from, to, caption, template, cc, bcc };
+                    var url = as.crud2.options.defaults.ajaxURLFormat.format('createitem');
+
+                    as.sys.ajaxSend(url, params, function (data) {
+                        if (data.result) {
+                            as.sys.bootstrapAlert("Сохранено", { type: 'success' });
+                            as.sys.closeDialog();
+                            as.crud2.getItems({ g: $(".usCont").attr("data-g") });
+                        } else {
+                            as.sys.bootstrapAlert(data.msg || "Возникли ошибки при выполнении операции!", { type: 'danger' });
+                        }
+                    }, false);
+                });
+            }
+        }
+        $(function () {
+            us.init();
+        });
+    </script>
+}

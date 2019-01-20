@@ -59,14 +59,18 @@ as.emails = {
             return;
         }
 
-        as.sys.closeDialog();
         var params = {code: code, from: from, to: to, subject: caption, body: text };
 
         as.sys.ajaxSend(as.emails.options.ajaxURLFormat.format('send'), params, function (data) {
             //as.sys.showMessage(data.result ? 'Сообщение успешно отправлено\n' + data.msg : 'Ошибка при отправке сообщения\n' + data.msg);
-            if (data.result) as.sys.bootstrapAlert('Сообщение успешно отправлено!', { type: 'success' });
-            else as.sys.bootstrapAlert("Ошибка при отправке сообщения!", { type: 'danger' });
-           console && console.log(data.msg);
+            if (data.result) {
+                as.sys.bootstrapAlert('Сообщение успешно отправлено!', { type: 'success' });
+                as.sys.closeDialog();
+            } else {
+                as.sys.bootstrapAlert("Ошибка при отправке сообщения!", { type: 'danger' });
+                console && console.log(data.msg);
+            }
+                
         }, true);
     }
 }

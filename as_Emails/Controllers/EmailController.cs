@@ -1,46 +1,33 @@
 ﻿using as_Emails.BLL;
+using as_Emails.Models;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace as_Emails.Controllers
 {
     public class EmailController : Controller
     {
-        #region MyEmailManager
-        public MyEmailManager myMng = new MyEmailManager(new Models.EmailSettings { Host = "smtp.google.com", Port = 465, UserName = "g_User", Password = "qwerty", DisplayName = "Anon" });
-        
-        public ActionResult someMethod()
-        {
-            var msg = "";
-
-            var item = myMng.ShowMessage("", null, out msg);
-            myMng.Send("",out msg, "+7888124567", "+7888124567", "", "Text");
-
-            return Json(new { item });
-        }
-        #endregion
-
         public EmailManager mng = new EmailManager();
 
         public ActionResult ShowMessage(string code, Dictionary<string, string> parameters)
         {
+            EmailItem res = null;
             var msg = "";
-            Models.EmailItem res = null;
 
             if (code != null && parameters != null)
             {
                 res = mng.ShowMessage(code, parameters, out msg);
             }
 
-            var result = res == null ? false : true;
-            var json = JsonConvert.SerializeObject(new
-            {
+            var result = res != null;
+            return Json(new {
                 result,
                 msg,
                 email = result ? new { res.code, res.from, res.to, caption = res.subject, body = res.template } : null
             });
-            return Content(json, "application/json");
         }
 
         public ActionResult Send(string code, string from, string to, string subject, string body)
@@ -50,11 +37,117 @@ namespace as_Emails.Controllers
 
             res = mng.Send(code, out msg, to, from, subject, body);
 
-            var json = JsonConvert.SerializeObject(new
+            return Json(new
             {
-                result = res, msg
+                result = res,
+                msg
             });
-            return Content(json, "application/json");
+        }
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult GetItems()
+        {
+            var parameters = AjaxModel.GetParameters(HttpContext);
+            var msg = "";
+            
+            var items = mng.GetAllTemplates(out msg);
+
+            if (parameters.filter != null && parameters.filter.Count > 0)
+            {
+                var code = parameters.filter.ContainsKey("code") ? parameters.filter["code"].ToString() : "";
+
+                items = items.Where(x => x.code.Contains(code));
+            }
+
+            var sorts = parameters.sort.Split(",".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+            var directions = parameters.direction.Split(",".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+            var sort1 = sorts.Length > 0 ? sorts[0] : "";
+            var direction1 = directions.Length > 0 ? directions[0] : "";
+
+            switch (sort1)
+            {
+                case "from":
+                    if (direction1 == "up") items = items.OrderBy(x => x.code);
+                    else items = items.OrderByDescending(x => x.code);
+                    break;
+                case "to":
+                    if (direction1 == "up") items = items.OrderBy(x => x.code);
+                    else items = items.OrderByDescending(x => x.code);
+                    break;
+                case "subject":
+                    if (direction1 == "up") items = items.OrderBy(x => x.subject);
+                    else items = items.OrderByDescending(x => x.subject);
+                    break;
+                case "cc":
+                    if (direction1 == "up") items = items.OrderBy(x => x.cc);
+                    else items = items.OrderByDescending(x => x.cc);
+                    break;
+                case "bcc":
+                    if (direction1 == "up") items = items.OrderBy(x => x.bcc);
+                    else items = items.OrderByDescending(x => x.bcc);
+                    break;
+                default:
+                case "code":
+                    if (direction1 == "up") items = items.OrderBy(x => x.code);
+                    else items = items.OrderByDescending(x => x.code);
+                    break;
+            }
+
+            var total = items.Count();
+            var res = items.Skip(parameters.pageSize * (parameters.page - 1)).Take(parameters.pageSize).ToList();
+
+
+            return Json(new
+            {
+                result = items == null,
+                items = res,
+                total,
+                msg
+            });
+        }
+
+        public ActionResult CreateItem(string code, string from, string to, string caption, string template, string cc, string bcc)
+        {
+            bool res;
+            var msg = "";
+
+            res = mng.CreateNewMail(new EmailItem {code=code, from=from, to=to, subject=caption, template=template, cc=cc, bcc=bcc }, out msg);
+
+            return Json(new {
+                result = res,
+                msg
+            });
+        }
+
+        public ActionResult EditItem(int pk, string name, [ModelBinder(typeof(AllowHtmlBinder))] string value)
+        {
+            bool res;
+            var msg = "";
+
+            res = mng.EditMail(pk, name, value, out msg);
+
+            return Json(new
+            {
+                result = res,
+                msg
+            });
+        }
+
+        public ActionResult Remove(int id)
+        {
+            bool res;
+            var msg = "";
+
+            res = mng.DeleteMail(id, out msg);
+
+            return Json(new {
+                result = res,
+                msg
+            });
         }
     }
 }
