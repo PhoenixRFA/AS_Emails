@@ -91,7 +91,7 @@ namespace as_Emails.BLL
                 //subject = System.Net.WebUtility.HtmlEncode(subject);
                 //body = System.Net.WebUtility.HtmlEncode(body);
 
-                email.from = from; email.to = to; email.subject = subject; email.template = body;
+                email.from = from; email.to = to; email.subject = subject; email.template = body.Replace("\n","<br />"); 
 
                 //SendEmail(email.id, from, _defaultSettings.DisplayName, to, email.bcc, email.cc, subject, body, _defaultSettings.Host,
                 //    _defaultSettings.UserName, _defaultSettings.Password, _defaultSettings.Port, getUserName(), _defaultSettings.IsSSL, "");

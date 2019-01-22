@@ -29,11 +29,11 @@ as.emails = {
                 console && console.log(data.msg);
                 return;
             }
-            
+            var to = btn.data('to') || data.email.to;
             var body = '<div class="">' +
                 '<input id="eCode" type="hidden" value="' + (data.email.code || '') + '" />' +
                 '<div class="input-group mb-2"><span class="input-group-addon">От: &nbsp; &nbsp;</span><input id="eFrom" class="form-control" type="text" placeholder="От кого:" value="' + (data.email.from || '') + '" /></div>' +
-                '<div class="input-group mb-2"><span class="input-group-addon">Кому:</span><input id="eTo" class="form-control" type="text" placeholder="Кому:" value="' + (data.email.to || '') + '" /></div>' +
+                '<div class="input-group mb-2"><span class="input-group-addon">Кому:</span><input id="eTo" class="form-control" type="text" placeholder="Кому:" value="' + (to || '') + '" /></div>' +
                 '<div class="input-group mb-2"><span class="input-group-addon">Тема:</span><input id="eCaption" class="form-control" type="text" placeholder="Тема письма" value="' + (data.email.caption || '') + '" /></div>' +
                 '<label class="control-label" for="eBody">Текст:</label><textarea id="eBody" class="form-control" cols="80" rows="10" placeholder="Текст письма">' + (data.email.body || '') + '</textarea>' +
                 '</div>';

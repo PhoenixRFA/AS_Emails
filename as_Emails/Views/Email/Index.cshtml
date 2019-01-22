@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Шаблоны писем";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -37,7 +37,7 @@
                 as.crud2.initTable({
                     cont: $('.usCont'),
                     immediatelyLoad: true,
-                    title: "Документы",
+                    title: "Шаблоны писем",
                     toolbarAdditional: "<a href ='#' class='btn btn-primary usCreateItem'>Создать</a>",
                     groupOperationsToolbar: "",
                     ajaxURLFormat: "/Email/{0}",
@@ -98,16 +98,6 @@
                     if (!code.trim()) {
                         as.sys.bootstrapAlert("Поле \"Код:\" не заполнено!", { type: 'warning' });
                         $('.usCode').focus();
-                        return;
-                    }
-                    if (!from.trim()) {
-                        as.sys.bootstrapAlert("Поле \"От:\" не заполнено!", { type: 'warning' });
-                        $('.usFrom').focus();
-                        return;
-                    }
-                    if (!to.trim()) {
-                        as.sys.bootstrapAlert("Поле \"Кому:\" не заполнено!", { type: 'warning' });
-                        $('.usTo').focus();
                         return;
                     }
                     if (!caption.trim()) {
