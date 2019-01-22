@@ -10,7 +10,7 @@ namespace as_Emails.Controllers
 {
     public class EmailController : Controller
     {
-        public EmailManager mng = new EmailManager();
+        public IEmailManager mng = new EmailManager();
 
         public ActionResult ShowMessage(string code, Dictionary<string, string> parameters)
         {

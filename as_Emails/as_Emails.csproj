@@ -177,7 +177,6 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="BLL\IEmailCRUDManager.cs" />
     <Compile Include="BLL\RDL\Convert.cs" />
     <Compile Include="Models\AjaxModel.cs" />
     <Compile Include="Startup.cs" />
@@ -206,6 +205,7 @@
     <Content Include="App_Data\Emails_log.ldf">
       <DependentUpon>Emails.mdf</DependentUpon>
     </Content>
+    <Content Include="App_Data\script.sql" />
     <Content Include="Content\as.crud2.css" />
     <Content Include="Content\bootstrap-editable.css" />
     <Content Include="Content\bootstrap-theme.css" />
