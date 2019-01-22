@@ -17,7 +17,7 @@ using MimeKit;
 
 namespace as_Emails.BLL
 {
-    public class EmailManager : IEmailManager, IEmailCRUDManager
+    public class EmailManager : IEmailManager
     {
         #region Setup
         protected enum CRUDOperationType : byte { create, read, update, delete }
